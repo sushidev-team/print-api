@@ -1,17 +1,19 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SystemModule } from './system/system.module';
 import { BrowserModule } from './browser/browser.module';
 
-import configuration from './config/configuration';
+import configuration from './configuration/configuration';
+
+import { ConfigModule } from '@nestjs/config';
+import { ConfigurationModule } from './configuration/configuration.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
-  }), SystemModule, BrowserModule],
+  }), SystemModule, BrowserModule, ConfigurationModule],
   controllers: [AppController],
   providers: [AppService],
 })

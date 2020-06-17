@@ -7,6 +7,7 @@ import { v4 as uuidv4  } from 'uuid';
 import { BrowseGuard } from 'src/guards/browse.guard';
 import signed, { Signature } from 'signed';
 import { ConfigService } from '@nestjs/config';
+import { PdfResult } from 'src/models/PdfResult';
 
 const fs = require("fs");
 const oppressor = require('oppressor');
@@ -56,12 +57,15 @@ export class BrowserController {
         
     }
 
-    res.status(HttpStatus.OK).json({
+    console.error(result);
+
+    res.status(HttpStatus.OK).json(new PdfResult({
         statusCode: HttpStatus.OK,
         requestUrl: createSession.url,
         downloadUrl: resultUpload == false ? this.signature.sign(`http://${request.headers.host}/api/browse/${result.id}`) : null,
-        uploaded: resultUpload
-    });
+        filename: result.id,
+        uploaded: resultUpload  
+    }));
  
   }
 }

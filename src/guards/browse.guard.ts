@@ -7,9 +7,11 @@ const jwt = require('jsonwebtoken');
 @Injectable()
 export class BrowseGuard implements CanActivate {
 
-  constructor(@Inject('CONFIG_OPTIONS') private configService: ConfigService) {}
+  constructor(@Inject('ConfigService') private configService: ConfigService) {
+    
+  }
 
-  canActivate(
+  canActivate( 
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
 
