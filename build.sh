@@ -43,11 +43,11 @@ arg1="$1"
 
 if [[ "$(docker images -q ${COMPLETE} 2> /dev/null)" == "" ]]; then
   echo "Docker image for ${COMPLETE} does not exists on this maschine. Start creating it...";
-  docker build -f "$root/dockerfile" -t ${COMPLETE} "${root}";
+  docker build -f "$root/Dockerfile" -t ${COMPLETE} "${root}";
   docker push $COMPLETE;
 fi
 
-docker build -f "$root/dockerfile" -t ${LATEST} "${root}";
+docker build -f "$root/Dockerfile" -t ${LATEST} "${root}";
 docker push $LATEST;
 
 if [[ "${arg1}" == "--dev" ]]; then
