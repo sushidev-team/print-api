@@ -6,6 +6,7 @@ export class CreateBrowserDto {
     url: String;
 
     filename: String;
+    postBackWait: boolean = true;
     postBackUrl: String;
     postBackBody: Object;
     token: String;

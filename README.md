@@ -89,11 +89,35 @@ The port is required if you want to start the application on a differnt port.
 {
     "url": "http://orf.at",
     "filename": "my-wished-filename",
+    "postBackWait": true,
     "postBackUrl": "http://where-should-it-be-posted",
-    "postBackBody": "{}", // String cause form data does not accept json
-    "token": "CUSTOM AUTH-TOKEN" // Provide a valid authentication key if you do not want to use the JWT Authentication
+    "postBackBody": "{}",
+    "token": "CUSTOM AUTH-TOKEN"
 }
 ```
+
+#### url
+
+Provide the url of the page you want to be tranformed to a pdf document.
+
+#### filename
+
+If you do not provide a filename (without the extension) a uuid will be used as filename. Please choose a unique string otherwise you potentially overwrite documents (name conflicts).
+
+#### postBackUrl
+
+If you provide a postBackUrl the api will try to post the document to the given url.
+
+#### postBackBody
+
+Provide a string of data you wanna send back to the url. Please be aware that only string (NOT json) is supported.
+
+#### postBackWait
+Default: true
+
+Provide a boolean value if you want to wait for the complete answer of the postBackProcess.
+
+If set to false the return value "uploaded" will always be false. 
 
 ### [GET] /api/browse/:id
 

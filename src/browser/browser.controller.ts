@@ -46,25 +46,37 @@ export class BrowserController {
     let result = await this.browserService.savePage(createSession.url, createSession.filename);
     let resultUpload = false;
 
+    createSession.postBackWait = createSession.postBackWait == true;
+
     if (createSession.postBackUrl) {
 
-        resultUpload = await this.browserService.uploadFile(request, result.id, createSession);
+        if (createSession.postBackWait != false) {
 
-        // Delete the file after uploading to the endpoint
-        if (resultUpload) {
-          await this.browserService.deleteFile(result.storagePath);
+          resultUpload = await this.browserService.uploadFile(request, result.id, createSession);
+
+          // Delete the file after uploading to the endpoint
+          if (resultUpload) {
+            await this.browserService.deleteFile(result.storagePath);
+          }
+
+        }        
+        else {
+
+          this.browserService.uploadFile(request, result.id, createSession).then(() => {
+             this.browserService.deleteFile(result.storagePath)
+          });
+
         }
         
     }
-
-    console.error(result);
 
     res.status(HttpStatus.OK).json(new PdfResult({
         statusCode: HttpStatus.OK,
         requestUrl: createSession.url,
         downloadUrl: resultUpload == false ? this.signature.sign(`http://${request.headers.host}/api/browse/${result.id}`) : null,
         filename: result.id,
-        uploaded: resultUpload  
+        uploaded: resultUpload,
+        waited: createSession.postBackWait
     }));
  
   }
