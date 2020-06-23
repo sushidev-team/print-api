@@ -106,7 +106,7 @@ If you do not provide a filename (without the extension) a uuid will be used as 
 
 #### postBackUrl
 
-If you provide a postBackUrl the api will try to post the document to the given url.
+If you provide a postBackUrl the api will try to post the document to the given url. If this is not possible the endpoint will return a download url.
 
 #### postBackBody
 
