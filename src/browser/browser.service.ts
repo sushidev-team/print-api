@@ -68,6 +68,10 @@ export class BrowserService {
       const formData = new FormData();
       formData.append("file", fileForTransmission, `${filename}.pdf`);
 
+      if (session.filename !== undefined) {
+         formData.append("filename", session.filename);
+      }
+
       if (session.postBackBody) {
          formData.append("data", session.postBackBody ? JSON.stringify(session.postBackBody) : {});
       }

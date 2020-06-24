@@ -2,7 +2,7 @@
 
 This repository provides a simple api wrapper for puppeteer (the nodejs way to interact with google chrome headless). It also provides some functions to include it into a given application landscape (like creating the pdf and sending it back to a given endpoint of choice).
 
-The [CHANGLOG](CHANGLOG.md) gives you information  
+The [CHANGELOG](CHANGELOG.md) gives you information  
 
 ## Installation
 
@@ -148,6 +148,3 @@ services:
 ## Security Vulnerabilities
 
 If you discover a security vulnerability within this application, please send an e-mail to Manuel Pirker-Ihl via [manuel.pirker-ihl@ambersive.com](mailto:manuel.pirker-ihl@ambersive.com). All security vulnerabilities will be promptly addressed.
-
-## TODOS
-- Provide tests for the endpoints

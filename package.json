@@ -1,10 +1,10 @@
 {
   "name": "print-api",
-  "version": "0.1.0",
-  "description": "",
-  "author": "",
+  "version": "0.1.1",
+  "description": "This application allows you to create pdf documents of webpages and posting them to a prefered server/endpoint.",
+  "author": "Manuel Pirker Ihl<manuel.pirker-ihl@ambersive.com>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
