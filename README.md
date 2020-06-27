@@ -1,8 +1,10 @@
 # PRINT API based on Google Chrome
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/c1f89cb8d7f346b1d4c4/maintainability)](https://codeclimate.com/github/AMBERSIVE/print-api/maintainability)
+
 This repository provides a simple api wrapper for puppeteer (the nodejs way to interact with google chrome headless). It also provides some functions to include it into a given application landscape (like creating the pdf and sending it back to a given endpoint of choice).
 
-The [CHANGELOG](CHANGELOG.md) gives you information  
+The [CHANGELOG](CHANGELOG.md) gives you information about the latest changes.
 
 ## Installation
 
