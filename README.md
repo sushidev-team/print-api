@@ -48,6 +48,7 @@ If you want to use the JWT Authentication the JWT must contain custom claims wit
 
 [POST]: If the claim contains a "*" or the given *PERMISSIONS_PRINT_CREATE* key it will proceed.
 [GET]: If the claim contains a "*" or the given *PERMISSIONS_PRINT_READ* key it will proceed.
+
 #### JWT_ACTIVE (env key)
 
 Default: true
