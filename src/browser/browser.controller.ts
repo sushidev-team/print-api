@@ -24,6 +24,28 @@ export class BrowserController {
     });
   }
 
+  @Get("api/browse")
+  @UseGuards(BrowseGuard)
+  async files(@Param() params, @Req() req: Request, @Res() res: Response) {
+
+    let result = await fs.promises.readdir(`./storage/`);
+
+    result = result.filter(file => {
+      if (file.substr(0,1) !== '.') {
+         return file;
+      }
+    });
+
+
+    result = result.map(file => {
+       file = file.substr(0, file.length - 4);
+       return this.signature.sign(`${req.protocol}://${req.headers.host}/api/browse/${file}`);
+    })
+
+    res.status(HttpStatus.OK).json(result);
+
+  }
+
   @Get("api/browse/:id")
   async file(@Param() params, @Req() req: Request, @Res() res: Response) {
 
@@ -73,7 +95,7 @@ export class BrowserController {
     res.status(HttpStatus.OK).json(new PdfResult({
         statusCode: HttpStatus.OK,
         requestUrl: createSession.url,
-        downloadUrl: resultUpload == false ? this.signature.sign(`http://${request.headers.host}/api/browse/${result.id}`) : null,
+        downloadUrl: resultUpload == false ? this.signature.sign(`${request.protocol}://${request.headers.host}/api/browse/${result.id}`) : null,
         filename: result.id,
         uploaded: resultUpload,
         waited: createSession.postBackWait

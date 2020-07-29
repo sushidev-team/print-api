@@ -12,7 +12,8 @@ export default () => ({
         secret: process.env.BASIC_SECRET || null
     },
     permissions: {
-        browse: process.env.PERMISSION_BROWSE || 'browse'
+        browseCreate: process.env.PERMISSION_BROWSE_CREATE || 'browse-create',
+        browseRead: process.env.PERMISSION_BROWSE_READ || 'browse-read'
     },
     browser: process.env.BROWSER_PATH || null
   });

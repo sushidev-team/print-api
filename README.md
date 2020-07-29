@@ -21,7 +21,8 @@ JWT_SECRET=2VRxS0s15nV2BnyVYcgBvKJwoaPeQdVXsaJylt96Jb9iypXOGylcTCTo8rS1E7Mk
 JWT_ISSUER=http://localhost:8000/api/auth/login
 APP_KEY=
 PORT=3000
-PERMISSION_BROWSE=print
+PERMISSION_BROWSE_CREATE=print
+PERMISSION_BROWSE_READ=print
 ```
 
 ## Run the service
@@ -45,8 +46,8 @@ If you want to use the JWT Authentication the JWT must contain custom claims wit
 - roles (Array)
 - permissions (Array)
 
-If the claim contains a "*" or the given *PERMISSIONS_PRINT* key it will proceed.
-
+[POST]: If the claim contains a "*" or the given *PERMISSIONS_PRINT_CREATE* key it will proceed.
+[GET]: If the claim contains a "*" or the given *PERMISSIONS_PRINT_READ* key it will proceed.
 #### JWT_ACTIVE (env key)
 
 Default: true

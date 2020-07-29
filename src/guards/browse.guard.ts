@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 export class BrowseGuard implements CanActivate {
 
   constructor(@Inject('ConfigService') private configService: ConfigService) {
-    
+      
   }
 
   canActivate( 
@@ -19,9 +19,19 @@ export class BrowseGuard implements CanActivate {
     const jwtActive = this.configService.get<boolean>('jwt.active');
     const token = request.headers.authorization ? request.headers.authorization.replace('Bearer ', '') : '';  
 
+    let permissionFromConfig: string = "";
+    switch(request.method) {
+       case 'GET':
+        permissionFromConfig = "permissions.browseRead";
+        break;
+       case 'POST':
+        permissionFromConfig = "permissions.browseCreate";
+        break;
+    }
+
     if (jwtActive == true) {
       const data  = jwt.decode(token);
-      return data.permissions === undefined || data.permissions.indexOf(this.configService.get<string>('permissions.browse')) > -1 || data.permissions.indexOf('*') > -1;
+      return data.permissions === undefined || data.permissions.indexOf(this.configService.get<string>(permissionFromConfig)) > -1 || data.permissions.indexOf('*') > -1;
     }
     else {
       return true;
