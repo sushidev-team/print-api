@@ -36,10 +36,12 @@ export class BrowserController {
       }
     });
 
-
     result = result.map(file => {
-       file = file.substr(0, file.length - 4);
-       return this.signature.sign(`${req.protocol}://${req.headers.host}/api/browse/${file}`);
+       let id = file.substr(0, file.length - 4);
+       return {
+          "file": file,
+          "path": this.signature.sign(`${req.protocol}://${req.headers.host}/api/browse/${id}`),
+       };
     })
 
     res.status(HttpStatus.OK).json(result);

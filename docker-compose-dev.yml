@@ -2,7 +2,7 @@ version: "3.1"
 services:
   app: 
     image: ambersive/print-api:latest
-    environment: 
+    environment:
        - JWT_ACTIVE=false
        - BASIC_ACTIVE=true
        - BASIC_USER=test
@@ -10,3 +10,5 @@ services:
     restart:  always
     ports:
     - "9005:3000"
+    volumes:
+      - .:/app

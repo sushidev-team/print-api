@@ -1,6 +1,6 @@
 {
   "name": "print-api",
-  "version": "0.1.2",
+  "version": "0.2.2",
   "description": "This application allows you to create pdf documents of webpages and posting them to a prefered server/endpoint.",
   "author": "Manuel Pirker Ihl<manuel.pirker-ihl@ambersive.com>",
   "private": true,

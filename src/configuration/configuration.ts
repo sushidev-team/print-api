@@ -13,6 +13,7 @@ export default () => ({
     },
     permissions: {
         browseCreate: process.env.PERMISSION_BROWSE_CREATE || 'browse-create',
+        browseDestroy: process.env.PERMISSION_BROWSE_DELETE || 'browse-delete',
         browseRead: process.env.PERMISSION_BROWSE_READ || 'browse-read'
     },
     browser: process.env.BROWSER_PATH || null

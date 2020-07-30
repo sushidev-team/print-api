@@ -13,6 +13,7 @@ import { ConfigurationModule } from './configuration/configuration.module';
   imports: [ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
+      envFilePath: ['.env']
   }), SystemModule, BrowserModule, ConfigurationModule],
   controllers: [AppController],
   providers: [AppService],
