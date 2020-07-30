@@ -132,9 +132,11 @@ Example:
 ```json
 [
     {
-        "file": "04623fc1-86e8-4be9-bb65-fc1ffad4ba55.pdf",
-        "path": "http://localhost:3000/api/browse/04623fc1-86e8-4be9-bb65-fc1ffad4ba55?signed=r:3026092917;4776ee8a2c9cb3ace3770e3b276b174c"
-    }
+        "file": "1f422c9b-a03c-4ea6-92cb-a47a3d842839.pdf",
+        "path": "http://localhost:3000/api/browse/1f422c9b-a03c-4ea6-92cb-a47a3d842839?signed=r:7322595290;5d10a8acc4810c24ea9e3bf03a8868e1",
+        "created_at": "2020-06-27T22:27:09.876Z",
+        "updated_at": "2020-06-27T22:27:09.876Z"
+    },
 ]
 ```
 

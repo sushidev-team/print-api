@@ -38,9 +38,13 @@ export class BrowserController {
 
     result = result.map(file => {
        let id = file.substr(0, file.length - 4);
+       let { mtime, ctime } = fs.statSync(`./storage/${file}`);
+
        return {
           "file": file,
           "path": this.signature.sign(`${req.protocol}://${req.headers.host}/api/browse/${id}`),
+          "created_at": ctime,
+          "updated_at": mtime
        };
     })
 
