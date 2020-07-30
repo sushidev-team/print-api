@@ -19,10 +19,10 @@ Define the required environment keys:
 ```
 JWT_SECRET=2VRxS0s15nV2BnyVYcgBvKJwoaPeQdVXsaJylt96Jb9iypXOGylcTCTo8rS1E7Mk
 JWT_ISSUER=http://localhost:8000/api/auth/login
-APP_KEY=
 PORT=3000
 PERMISSION_BROWSE_CREATE=print
 PERMISSION_BROWSE_READ=print
+PERMISSION_BROWSE_DELETE=print
 ```
 
 ## Run the service
@@ -123,6 +123,21 @@ Provide a boolean value if you want to wait for the complete answer of the postB
 
 If set to false the return value "uploaded" will always be false. 
 
+### [GET] /api/browse
+
+This endpoint will return a list of exsiting files in this container plus a signed url to access them without using credentials. 
+
+Example:
+
+```json
+[
+    {
+        "file": "04623fc1-86e8-4be9-bb65-fc1ffad4ba55.pdf",
+        "path": "http://localhost:3000/api/browse/04623fc1-86e8-4be9-bb65-fc1ffad4ba55?signed=r:3026092917;4776ee8a2c9cb3ace3770e3b276b174c"
+    }
+]
+```
+
 ### [GET] /api/browse/:id
 
 This endpoint will return the file. Please be aware that there will be a query string required query string param *signed*.
@@ -130,6 +145,11 @@ This endpoint will return the file. Please be aware that there will be a query s
 eg. http://localhost:3000/api/browse/199f0e09-516c-4f40-9960-7aa6f89d8c02?signed=r:1876707481;225240c533184a5f4fdd5aa29aea7e70
 
 Without this query string param the request will fail and you will get an 403.
+
+### [DELETE] /api/browse/:id
+
+To delete an file use this endpoint. 
+The *id*-param can contain the .pdf file extension.
 
 ## Docker
 This repository provides a docker image and a docker-compose file as an example.
@@ -140,10 +160,10 @@ services:
   app: 
     image: ambersive/print-api:latest
     environment: 
-       - JWT_ACTIVE:false
-       - BASIC_ACTIVE:true
-       - BASIC_USER:test
-       - BASIC_SECRET:test
+       - JWT_ACTIVE=false
+       - BASIC_ACTIVE=true
+       - BASIC_USER=test
+       - BASIC_SECRET=test
     restart:  always
     ports:
     - "9005:3000"

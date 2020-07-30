@@ -20,9 +20,13 @@ export class BrowseGuard implements CanActivate {
     const token = request.headers.authorization ? request.headers.authorization.replace('Bearer ', '') : '';  
 
     let permissionFromConfig: string = "";
+
     switch(request.method) {
        case 'GET':
         permissionFromConfig = "permissions.browseRead";
+        break;
+       case 'DELETE':
+        permissionFromConfig = "permissions.browseDestroy";
         break;
        case 'POST':
         permissionFromConfig = "permissions.browseCreate";
