@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res,Req, HttpStatus, Param, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Req, HttpStatus, Param, UseGuards, UsePipes, ValidationPipe, Delete } from '@nestjs/common';
 import { BrowserService } from './browser.service';
 import { CreateBrowserDto,CreateBrowserResponseDto } from '../dto/create-browser.dto';
 import { Response, Request } from 'express';
@@ -59,6 +59,24 @@ export class BrowserController {
     });
     
     stream.pipe(oppressor(req)).pipe(res);
+
+  }
+
+  @Delete("api/browse/:id")
+  @UseGuards(BrowseGuard)
+  async fileDestroy(@Param() params, @Req() req: Request, @Res() res: Response) {
+
+    let id = params.id.indexOf('.pdf') > -1 ? params.id.substr(0, params.id.length - 4) : params.id;
+    let path = `./storage/${id}.pdf`;
+
+    try {
+      await fs.accessSync(path, fs.constants.F_OK);
+      fs.unlinkSync(path);
+    } catch (err) {
+      return res.status(HttpStatus.BAD_REQUEST).json({statusCode: HttpStatus.BAD_REQUEST, message: `Something went wrong while trying to delete "${id}"`}); 
+    }
+    
+    res.status(HttpStatus.OK).json({statusCode:HttpStatus.OK}); 
 
   }
 
