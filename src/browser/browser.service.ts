@@ -9,6 +9,12 @@ import { CreateBrowserResponseDto, CreateBrowserDto } from 'src/dto/create-brows
 import { Response, Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Browse } from './browse.entity';
+
+import { UpdateResult, DeleteResult } from  'typeorm';
+
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const FormData = require('form-data');
@@ -16,8 +22,35 @@ const FormData = require('form-data');
 @Injectable()
 export class BrowserService {
 
-  constructor(private configService: ConfigService) {}
+  constructor(
+    @InjectRepository(Browse)
+        private browseRepository: Repository<Browse>,
+        private configService: ConfigService
+    ) {}
   
+  
+  async  findAll(): Promise<Browse[]> {
+      return await this.browseRepository.find();
+  }
+
+  async find(Id: string): Promise<Browse> {
+    return await this.browseRepository.findOne(Id);
+  }
+
+  async  create(browse: Browse): Promise<Browse> {
+      return await this.browseRepository.save(browse);
+  }
+
+  async update(browse: Browse): Promise<UpdateResult> {
+      return await this.browseRepository.update(browse.id, browse);
+  }
+
+  async delete(id): Promise<DeleteResult> {
+      let path = `./storage/${id}.pdf`;
+      this.deleteFile(path);
+      return await this.browseRepository.delete(id);
+  }
+
   /**
    * Create the pdf document
    * @param path 

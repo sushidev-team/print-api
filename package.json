@@ -1,6 +1,6 @@
 {
   "name": "print-api",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "This application allows you to create pdf documents of webpages and posting them to a prefered server/endpoint.",
   "author": "Manuel Pirker Ihl<manuel.pirker-ihl@ambersive.com>",
   "private": true,
@@ -26,6 +26,7 @@
     "@nestjs/config": "^0.5.0",
     "@nestjs/core": "^7.4.1",
     "@nestjs/platform-express": "^7.4.1",
+    "@nestjs/swagger": "^4.5.12",
     "@nestjs/typeorm": "^7.1.0",
     "axios": "^0.19.2",
     "class-transformer": "^0.2.3",
@@ -40,6 +41,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.0",
     "signed": "^1.0.3",
+    "sqlite3": "^5.0.0",
+    "swagger-ui-express": "^4.1.4",
     "typeorm": "^0.2.25",
     "uuid": "^8.3.0"
   },

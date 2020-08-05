@@ -4,9 +4,11 @@ import { BrowserController } from './browser.controller';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
 import { SignedMiddleware } from 'src/middlewares/signed.middleware';
 import { ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Browse } from './browse.entity';
 
 @Module({
-    imports:[],
+    imports:[TypeOrmModule.forFeature([Browse]),],
     controllers:[BrowserController],
     providers: [BrowserService, {provide: 'CONFIG_OPTIONS', useValue: ConfigService},],
 })

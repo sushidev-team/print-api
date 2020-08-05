@@ -8,6 +8,8 @@ import { BrowseGuard } from 'src/guards/browse.guard';
 import signed, { Signature } from 'signed';
 import { ConfigService } from '@nestjs/config';
 import { PdfResult } from 'src/models/PdfResult';
+import { Browse } from './browse.entity';
+import { ApiResponse, ApiBasicAuth, ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 
 const fs = require("fs");
 const oppressor = require('oppressor');
@@ -26,56 +28,90 @@ export class BrowserController {
 
   @Get("api/browse")
   @UseGuards(BrowseGuard)
+  @ApiOperation({description: 'Get a list of all pdf documents.'})
+  @ApiResponse({ status: 200, description: 'Returns a list of all pdf documents from the server.' })
+  @ApiBasicAuth()
+  @ApiBearerAuth()
+  @ApiTags("Manage documents")
   async files(@Param() params, @Req() req: Request, @Res() res: Response) {
 
-    let result = await fs.promises.readdir(`./storage/`);
+    let result;
 
-    result = result.filter(file => {
-      if (file.substr(0,1) !== '.') {
-         return file;
-      }
-    });
+    try {
 
-    result = result.map(file => {
-       let id = file.substr(0, file.length - 4);
-       let { mtime, ctime } = fs.statSync(`./storage/${file}`);
-
-       return {
-          "file": file,
-          "path": this.signature.sign(`${req.protocol}://${req.headers.host}/api/browse/${id}`),
-          "created_at": ctime,
-          "updated_at": mtime
-       };
-    })
+      result = await this.browserService.findAll();
+      result = result.map(file => {
+ 
+        return {
+           "id": file.id,
+           "filename": file.filename,
+           "path": this.signature.sign(`${req.protocol}://${req.headers.host}/api/browse/${file.id}`),
+           "created_at": file.created_at,
+           "updated_at": file.updated_at,
+           "downloads": file.downloads,
+           "autodelete": file.autodelete
+        };
+     })
+    } catch (err) {
+      return res.status(HttpStatus.BAD_REQUEST).json({statusCode: HttpStatus.BAD_REQUEST, message: `Something went wrong.`}); 
+    }
 
     res.status(HttpStatus.OK).json(result);
 
   }
 
   @Get("api/browse/:id")
+  @ApiOperation({description: 'Download a single file.'})
+  @ApiResponse({ status: 200, description: 'Will return the actual file.' })
+  @ApiTags("Manage documents")
   async file(@Param() params, @Req() req: Request, @Res() res: Response) {
 
-    let stream = fs.createReadStream(`./storage/${params.id}.pdf`);
+    let fileEntry;
+    let stream;
 
-    res.set({
-        'Content-Type': 'application/pdf',
-        'Content-Length': stream.length,
-    });
-    
-    stream.pipe(oppressor(req)).pipe(res);
+    try {
+      
+      fileEntry = await this.browserService.find(params.id);
 
+      if (!fileEntry) {
+        throw "File not found";
+      }
+
+      stream = fs.createReadStream(`./storage/${params.id}.pdf`);
+
+      fileEntry.downloads++;
+      this.browserService.update(fileEntry);
+
+      res.set({
+          'Content-Type': 'application/pdf',
+          'Content-Length': stream.length,
+          'Content-Disposition': 'form-data;filename="' + fileEntry.filename +'"'
+      });
+      
+      stream.pipe(oppressor(req)).pipe(res);
+
+      // Delete the file if autodelete flag is active
+      if (fileEntry.autodelete) {
+        this.browserService.delete(params.id);
+      }
+    } catch (err) {
+      return res.status(HttpStatus.BAD_REQUEST).json({statusCode: HttpStatus.BAD_REQUEST, message: `Something went wrong. The file might be already deleted.`}); 
+    }
   }
 
   @Delete("api/browse/:id")
   @UseGuards(BrowseGuard)
+  @ApiOperation({description: 'Delete a file'})
+  @ApiResponse({ status: 200, description: 'Will delete the file.' })
+  @ApiBasicAuth()
+  @ApiBearerAuth()
+  @ApiTags("Manage documents")
   async fileDestroy(@Param() params, @Req() req: Request, @Res() res: Response) {
 
     let id = params.id.indexOf('.pdf') > -1 ? params.id.substr(0, params.id.length - 4) : params.id;
-    let path = `./storage/${id}.pdf`;
-
+    
     try {
-      await fs.accessSync(path, fs.constants.F_OK);
-      fs.unlinkSync(path);
+      this.browserService.delete(id);
     } catch (err) {
       return res.status(HttpStatus.BAD_REQUEST).json({statusCode: HttpStatus.BAD_REQUEST, message: `Something went wrong while trying to delete "${id}"`}); 
     }
@@ -87,11 +123,18 @@ export class BrowserController {
   @Post("api/browse")
   @UseGuards(BrowseGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
+  @ApiOperation({description: 'Create a pdf document based on a url.'})
+  @ApiResponse({ status: 200, description: 'Will open the url an create a pdf document.' })
+  @ApiBasicAuth()
+  @ApiBearerAuth()
+  @ApiTags("Create pdf documents")
   async create(@Body() createSession: CreateBrowserDto, @Res() res: Response, @Req() request:Request) { 
 
-    let result = await this.browserService.savePage(createSession.url, createSession.filename);
+    let result = await this.browserService.savePage(createSession.url);
     let resultUpload = false;
+    let resultUploadFailed = false;
 
+    createSession.autodelete = createSession.autodelete == true;
     createSession.postBackWait = createSession.postBackWait == true;
 
     if (createSession.postBackUrl) {
@@ -103,6 +146,9 @@ export class BrowserController {
           // Delete the file after uploading to the endpoint
           if (resultUpload) {
             await this.browserService.deleteFile(result.storagePath);
+          }
+          else {
+            resultUploadFailed = true;
           }
 
         }        
@@ -116,13 +162,24 @@ export class BrowserController {
         
     }
 
+    // Create the database entry for the file
+    let browseEntry: Browse = new Browse();
+
+    browseEntry.id = result.id.toString();
+    browseEntry.filename = (createSession.filename ? createSession.filename.toString() : result.id.toString()) + '.pdf';
+    browseEntry.autodelete = resultUploadFailed || createSession.autodelete;
+
+    this.browserService.create(browseEntry);
+
     res.status(HttpStatus.OK).json(new PdfResult({
         statusCode: HttpStatus.OK,
         requestUrl: createSession.url,
         downloadUrl: resultUpload == false ? this.signature.sign(`${request.protocol}://${request.headers.host}/api/browse/${result.id}`) : null,
-        filename: result.id,
+        id: result.id,
+        filename: browseEntry.filename,
         uploaded: resultUpload,
-        waited: createSession.postBackWait
+        waited: createSession.postBackWait,   
+        autodelete: createSession.autodelete   
     }));
  
   }

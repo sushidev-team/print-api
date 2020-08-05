@@ -46,8 +46,9 @@ If you want to use the JWT Authentication the JWT must contain custom claims wit
 - roles (Array)
 - permissions (Array)
 
-[POST]: If the claim contains a "*" or the given *PERMISSIONS_PRINT_CREATE* key it will proceed.
-[GET]: If the claim contains a "*" or the given *PERMISSIONS_PRINT_READ* key it will proceed.
+[POST]: If the claim contains a "*" or the given *PERMISSION_BROWSE_CREATE* key it will proceed.
+[GET]: If the claim contains a "*" or the given *PERMISSION_BROWSE_READ* key it will proceed.
+[DELETE]: If the claim contains a "*" or the given *PERMISSION_BROWSE_DELETE* key it will proceed.
 
 #### JWT_ACTIVE (env key)
 
@@ -96,7 +97,8 @@ The port is required if you want to start the application on a differnt port.
     "postBackWait": true,
     "postBackUrl": "http://where-should-it-be-posted",
     "postBackBody": "{}",
-    "token": "CUSTOM AUTH-TOKEN"
+    "token": "CUSTOM AUTH-TOKEN",
+    "autodelete": false
 }
 ```
 
@@ -120,6 +122,11 @@ Provide a string of data you wanna send back to the url. Please be aware that on
 Default: true
 
 Provide a boolean value if you want to wait for the complete answer of the postBackProcess.
+
+#### autodelete
+Default: false
+
+Provide a boolean value if you want to delete the file on the first download attempt.
 
 If set to false the return value "uploaded" will always be false. 
 
