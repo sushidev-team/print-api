@@ -9,9 +9,9 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get('/')
-  @ApiResponse({ status: 303, description: 'Will redirect to the healthcheck (/api/status).' })
+  @ApiResponse({ status: 303, description: 'Will redirect to documentation.' })
   @ApiTags("System")
   postAuthRequest(@Res() response: express.Response) {
-    return response.redirect(303, `/api/status`);
+    return response.redirect(303, `/api`);
   }
 }

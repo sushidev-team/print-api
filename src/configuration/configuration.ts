@@ -16,5 +16,8 @@ export default () => ({
         browseDestroy: process.env.PERMISSION_BROWSE_DELETE || 'browse-delete',
         browseRead: process.env.PERMISSION_BROWSE_READ || 'browse-read'
     },
-    browser: process.env.BROWSER_PATH || null
+    browser: process.env.BROWSER_PATH || null,
+    healthcheck: {
+        dnsUrl: process.env.HEALTHCHECK_DNS_CHECK_URL || 'https://google.com',
+    }
   });
