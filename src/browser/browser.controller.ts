@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res, Req, HttpStatus, Param, UseGuards, UsePipes, ValidationPipe, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Req, HttpStatus, Param, UseGuards, UsePipes, ValidationPipe, Delete, Put } from '@nestjs/common';
 import { BrowserService } from './browser.service';
 import { CreateBrowserDto,CreateBrowserResponseDto } from '../dto/create-browser.dto';
 import { Response, Request } from 'express';
@@ -10,6 +10,8 @@ import { ConfigService } from '@nestjs/config';
 import { PdfResult } from 'src/models/PdfResult';
 import { Browse } from './browse.entity';
 import { ApiResponse, ApiBasicAuth, ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { UpdateBrowserDto } from 'src/dto/update-browser.dto';
+import { getConnection } from 'typeorm';
 
 const fs = require("fs");
 const oppressor = require('oppressor');
@@ -49,7 +51,8 @@ export class BrowserController {
            "created_at": file.created_at,
            "updated_at": file.updated_at,
            "downloads": file.downloads,
-           "autodelete": file.autodelete
+           "autodelete": file.autodelete,
+           "printed": file.printed
         };
      })
     } catch (err) {
@@ -97,6 +100,47 @@ export class BrowserController {
     } catch (err) {
       return res.status(HttpStatus.BAD_REQUEST).json({statusCode: HttpStatus.BAD_REQUEST, message: `Something went wrong. The file might be already deleted.`}); 
     }
+  }
+
+  @Put("api/browse/:id")
+  @ApiOperation({description: 'Update data from the application'})
+  @ApiResponse({ status: 200, description: 'Will return the current data object' })
+  @ApiTags("Manage documents")
+  @UseGuards(BrowseGuard)
+  async updateFile(@Param() params, @Req() req: Request, @Res() res: Response, @Body() updateData: UpdateBrowserDto) {
+
+    let fileEntry = await this.browserService.find(params.id);
+    let allowedKeys = Object.keys(getConnection().getMetadata(Browse).propertiesMap);
+
+    for (let param in updateData) {
+      if (allowedKeys.includes(param) && param != 'id') {
+
+        switch(param) {
+           case 'filename':
+            updateData[param].includes(".pdf") ? fileEntry[param] = updateData[param].toString() : fileEntry[param] = updateData[param].toString() + ".pdf";
+            break;
+           default:
+            fileEntry[param] = updateData[param];
+            break;
+        }
+      }
+    }
+
+    this.browserService.update(fileEntry);
+
+    res.status(HttpStatus.OK).json(
+      {
+        "id": fileEntry.id,
+        "filename": fileEntry.filename,
+        "path": this.signature.sign(`${req.protocol}://${req.headers.host}/api/browse/${fileEntry.id}`),
+        "created_at": fileEntry.created_at,
+        "updated_at": fileEntry.updated_at,
+        "downloads": fileEntry.downloads,
+        "autodelete": fileEntry.autodelete,
+        "printed": fileEntry.printed
+     }
+    ); 
+  
   }
 
   @Delete("api/browse/:id")

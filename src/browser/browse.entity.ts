@@ -21,4 +21,7 @@ export class Browse {
     @Column({ default: 0 })
     downloads: number;
 
+    @Column({ default: false })
+    printed: boolean
+
 }

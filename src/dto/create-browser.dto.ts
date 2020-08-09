@@ -20,6 +20,7 @@ export class CreateBrowserDto {
         required: false,
         description: 'Wait if the pdf create file should be created before teh request is returned.'
     })
+    @IsBoolean();
     postBackWait: boolean = true;
 
     @ApiProperty({
@@ -44,6 +45,7 @@ export class CreateBrowserDto {
         required: false,
         description: 'If set to true the file will automatically deleted on the first request.'
     })
+    @IsBoolean();
     autodelete: boolean = false;
 
 }
