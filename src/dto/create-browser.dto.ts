@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBrowserDto {
@@ -20,10 +20,10 @@ export class CreateBrowserDto {
         required: false,
         description: 'Wait if the pdf create file should be created before teh request is returned.'
     })
-    @IsBoolean();
+    @IsBoolean()
     postBackWait: boolean = true;
 
-    @ApiProperty({
+    @ApiProperty({ 
         required: false,
         description: 'Define an url to which the document should be send.'
     })
@@ -45,7 +45,7 @@ export class CreateBrowserDto {
         required: false,
         description: 'If set to true the file will automatically deleted on the first request.'
     })
-    @IsBoolean();
+    @IsBoolean()
     autodelete: boolean = false;
 
 }

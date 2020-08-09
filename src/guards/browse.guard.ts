@@ -31,6 +31,9 @@ export class BrowseGuard implements CanActivate {
        case 'POST':
         permissionFromConfig = "permissions.browseCreate";
         break;
+       case 'PUT':
+          permissionFromConfig = "permissions.browseUpdate";
+          break;
     }
 
     if (jwtActive == true) {
