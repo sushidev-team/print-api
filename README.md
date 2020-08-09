@@ -23,6 +23,7 @@ PORT=3000
 PERMISSION_BROWSE_CREATE=print
 PERMISSION_BROWSE_READ=print
 PERMISSION_BROWSE_DELETE=print
+PERMISSION_BROWSE_UPDATE=print
 ```
 
 ## Run the service
@@ -49,6 +50,7 @@ If you want to use the JWT Authentication the JWT must contain custom claims wit
 [POST]: If the claim contains a "*" or the given *PERMISSION_BROWSE_CREATE* key it will proceed.
 [GET]: If the claim contains a "*" or the given *PERMISSION_BROWSE_READ* key it will proceed.
 [DELETE]: If the claim contains a "*" or the given *PERMISSION_BROWSE_DELETE* key it will proceed.
+[PUT]: If the claim contains a "*" or the given *PERMISSION_BROWSE_UPDATE* key it will proceed.
 
 #### JWT_ACTIVE (env key)
 
