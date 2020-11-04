@@ -56,7 +56,7 @@ export class BrowserService {
    * @param path 
    * @param filename 
    */
-  async savePage(path: String, filename?: String): Promise<CreateBrowserResponseDto> {
+  async savePage(path: String, entityId:String, filename?: String): Promise<CreateBrowserResponseDto> {
 
     const executablePath = this.configService.get<string>('browser');
     let settings:any = {headless:true, 'args':["--no-sandbox", "--disable-setuid-sandbox"]};
@@ -65,17 +65,18 @@ export class BrowserService {
        settings.executablePath = this.configService.get<string>('browser');
     }
     
-    filename ? filename : filename = uuidv4();
-    const pathToFile = `storage/${filename}.pdf`;
+    filename ? filename : filename = entityId;
+
+    const pathToFile = `storage/${entityId}.pdf`;
     const browser = await puppeteer.launch(settings);
     const page = await browser.newPage();
 
-    await page.goto(path, {waitUntil: 'networkidle2'});
+    await page.goto(path, {waitUntil: 'networkidle0'});
     await page.pdf({path: pathToFile, format: 'A4'});
     await browser.close();
 
     return new Promise((resolve, rejects) => {
-       resolve(new CreateBrowserResponseDto(filename, path, pathToFile));
+       resolve(new CreateBrowserResponseDto(entityId, path, pathToFile, filename));
     });
 
   }

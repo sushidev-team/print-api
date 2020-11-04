@@ -73,6 +73,10 @@ export class BrowserController {
     let stream;
 
     try {
+
+      if (!params) {
+        throw "Incorrect params";
+      }
       
       fileEntry = await this.browserService.find(params.id);
 
@@ -88,7 +92,7 @@ export class BrowserController {
       res.set({
           'Content-Type': 'application/pdf',
           'Content-Length': stream.length,
-          'Content-Disposition': 'form-data;filename="' + fileEntry.filename +'"'
+          'Content-Disposition': 'form-data;filename="' + fileEntry.filename_return +'.pdf"'
       });
       
       stream.pipe(oppressor(req)).pipe(res);
@@ -131,7 +135,7 @@ export class BrowserController {
     res.status(HttpStatus.OK).json(
       {
         "id": fileEntry.id,
-        "filename": fileEntry.filename,
+        "filename": fileEntry.filename_return,
         "path": this.signature.sign(`${req.protocol}://${req.headers.host}/api/browse/${fileEntry.id}`),
         "created_at": fileEntry.created_at,
         "updated_at": fileEntry.updated_at,
@@ -174,9 +178,19 @@ export class BrowserController {
   @ApiTags("Create pdf documents")
   async create(@Body() createSession: CreateBrowserDto, @Res() res: Response, @Req() request:Request) { 
 
-    let result = await this.browserService.savePage(createSession.url);
+    // Create the database entry for the file
+    let browseEntry: Browse = new Browse();
+
+    browseEntry.id = uuidv4();
+    browseEntry.filename = browseEntry.id;
+    browseEntry.filename_return = (createSession.filename ? createSession.filename.toString() : browseEntry.id.toString());
+    browseEntry.autodelete = createSession.autodelete;
+
+    this.browserService.create(browseEntry);
+
+    let result = await this.browserService.savePage(createSession.url, browseEntry.id,  createSession.filename ? createSession.filename : browseEntry.id );
     let resultUpload = false;
-    let resultUploadFailed = false;
+    let resultUploadFailed = false;   
 
     createSession.autodelete = createSession.autodelete == true;
     createSession.postBackWait = createSession.postBackWait == true;
@@ -206,21 +220,12 @@ export class BrowserController {
         
     }
 
-    // Create the database entry for the file
-    let browseEntry: Browse = new Browse();
-
-    browseEntry.id = result.id.toString();
-    browseEntry.filename = (createSession.filename ? createSession.filename.toString() : result.id.toString()) + '.pdf';
-    browseEntry.autodelete = resultUploadFailed || createSession.autodelete;
-
-    this.browserService.create(browseEntry);
-
     res.status(HttpStatus.OK).json(new PdfResult({
         statusCode: HttpStatus.OK,
         requestUrl: createSession.url,
         downloadUrl: resultUpload == false ? this.signature.sign(`${request.protocol}://${request.headers.host}/api/browse/${result.id}`) : null,
         id: result.id,
-        filename: browseEntry.filename,
+        filename: browseEntry.filename_return,
         uploaded: resultUpload,
         waited: createSession.postBackWait,   
         autodelete: createSession.autodelete   

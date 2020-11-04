@@ -54,10 +54,12 @@ export class CreateBrowserResponseDto {
     url: String;
     id: String;
     storagePath: String;
+    filename: String;
 
-    constructor(id:String, url:String, path: String){
+    constructor(id:String, url:String, path: String, filename:String){
         this.id = id;
         this.url = url;
         this.storagePath = path;
+        this.filename = filename;
     }
 }

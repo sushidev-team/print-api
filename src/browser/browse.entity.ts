@@ -9,6 +9,9 @@ export class Browse {
     @Column()
     filename: string;
 
+    @Column()
+    filename_return: string;
+
     @CreateDateColumn({type: "date"})
     created_at: Date;
 
