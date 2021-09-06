@@ -29,7 +29,7 @@
     "@nestjs/swagger": "^4.7.5",
     "@nestjs/terminus": "^7.0.1",
     "@nestjs/typeorm": "^7.1.5",
-    "axios": "^0.20.0",
+    "axios": "^0.21.4",
     "class-transformer": "0.3.1",
     "class-validator": "^0.12.2",
     "form-data": "^3.0.0",
