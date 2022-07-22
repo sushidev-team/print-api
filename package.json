@@ -42,7 +42,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
     "signed": "^1.0.3",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "^5.0.10",
     "swagger-ui-express": "^4.1.5",
     "typeorm": "^0.2.29",
     "uuid": "^8.3.2"
