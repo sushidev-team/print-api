@@ -33,7 +33,7 @@
     "class-transformer": "0.3.1",
     "class-validator": "^0.12.2",
     "form-data": "^3.0.0",
-    "jest-junit": "^10.0.0",
+    "jest-junit": "^16.0.0",
     "jsonwebtoken": "^8.5.1",
     "nodejs-base64-encode": "^1.1.0",
     "oppressor": "0.0.1",
