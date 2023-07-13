@@ -31,7 +31,7 @@
     "@nestjs/typeorm": "^7.1.5",
     "axios": "^0.22.0",
     "class-transformer": "0.3.1",
-    "class-validator": "^0.12.2",
+    "class-validator": "^0.14.0",
     "form-data": "^3.0.0",
     "jest-junit": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
